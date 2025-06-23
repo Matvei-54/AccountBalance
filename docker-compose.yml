@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Balance
+    ports:
+      - '8181:8080'
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/Balance
+      - DB_USERNAME=balance-postgres
+      - DB_PASSWORD=balance-postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - db_pg_15
+      - redis
+
+  db_pg_15:
+    image: postgres:15-alpine
+    container_name: db
+    ports:
+      - '15432:5432'
+    environment:
+      POSTGRES_DB: Balance
+      POSTGRES_USER: balance-postgres
+      POSTGRES_PASSWORD: balance-postgres
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: redis
+    hostname: redis-master
+    ports:
+      - '6379:6379'
+    deploy:
+      replicas: 1

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="TRANSACTION_ENTITY_INIT_TABLE" author="Matvei">
+
+        <createTable tableName="transaction">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="amount" type="DECIMAL(19,4)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="currency" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="transaction_status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="transaction_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="owner_balance_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP(0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP(0)"/>
+
+            <column name="version" type="BIGINT" defaultValue="0"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="transaction" baseColumnNames="owner_balance_id"
+                                 constraintName="fk_transaction_balance" referencedTableName="balance"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+
+        <createIndex tableName="transaction" indexName="idx_transaction_source_balance">
+            <column name="owner_balance_id"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>
